@@ -26,6 +26,7 @@ type TaskRowsProps = {
   remainingRows: number;
   setVisibleLimit: Dispatch<SetStateAction<number>>;
   today: string;
+  effectiveDueDates: Map<string, string | null>;
   childCountByParent: Map<string, { total: number; done: number }>;
   editTask: (task: Task) => void;
   toggleTask: (id: string) => void;
@@ -45,6 +46,7 @@ export function TaskRows({
   remainingRows,
   setVisibleLimit,
   today,
+  effectiveDueDates,
   childCountByParent,
   editTask,
   toggleTask,
@@ -60,107 +62,113 @@ export function TaskRows({
   return (
     <div className="task-list">
       {visibleRows.length ? (
-        displayedRows.map(({ task, depth, contextOnly }) => (
-          <div
-            className={`task-row ${depth ? "subtask-row" : ""} ${contextOnly ? "context-row" : ""} ${task.completed ? "task-completed" : ""} ${!task.completed && task.dueDate && task.dueDate < today ? "task-overdue" : ""}`}
-            key={task.id}
-          >
-            <button
-              className="task-row-open"
-              type="button"
-              aria-label={`Открыть: ${task.title}`}
-              title="Открыть задачу"
-              onClick={() => editTask(task)}
-            />
-            {depth > 0 && (
-              <CornerDownRight
-                className="subtask-indent"
-                size={18}
-                aria-hidden="true"
-              />
-            )}
-            <button
-              type="button"
-              aria-label={`${task.completed ? "Вернуть в работу" : childCountByParent.has(task.id) ? "Выполнить с подзадачами" : "Выполнить"}: ${task.title}`}
-              aria-pressed={task.completed}
-              className={`check-box ${task.completed ? "checked" : ""}`}
-              onClick={() => toggleTask(task.id)}
+        displayedRows.map(({ task, depth, contextOnly }) => {
+          const dueDate = effectiveDueDates.get(task.id) ?? null;
+          return (
+            <div
+              className={`task-row ${depth ? "subtask-row" : ""} ${contextOnly ? "context-row" : ""} ${task.completed ? "task-completed" : ""} ${!task.completed && dueDate && dueDate < today ? "task-overdue" : ""}`}
+              key={task.id}
             >
-              {task.completed && <Check size={14} strokeWidth={3} />}
-            </button>
-            <div className="task-body">
-              <strong className="task-title" title={task.title}>
-                {task.title}
-              </strong>
-              {task.description && (
-                <p className="task-description" title={task.description}>
-                  {task.description}
-                </p>
+              <button
+                className="task-row-open"
+                type="button"
+                aria-label={`Открыть: ${task.title}`}
+                title="Открыть задачу"
+                onClick={() => editTask(task)}
+              />
+              {depth > 0 && (
+                <CornerDownRight
+                  className="subtask-indent"
+                  size={18}
+                  aria-hidden="true"
+                />
               )}
-              <div className="task-meta">
-                <span className={`task-priority ${task.priority}`}>
-                  <PriorityIcon priority={task.priority} size={14} />{" "}
-                  {priorityLabels[task.priority]}
-                </span>
-                {task.dueDate && (
-                  <span
-                    className={`task-due ${!task.completed && task.dueDate < today ? "overdue" : !task.completed && task.dueDate === today ? "today" : ""}`}
-                  >
-                    {!task.completed && task.dueDate < today ? (
-                      <AlertTriangle size={14} aria-hidden="true" />
-                    ) : !task.completed && task.dueDate === today ? (
-                      <Flame size={14} aria-hidden="true" />
-                    ) : (
-                      <CalendarDays size={12} aria-hidden="true" />
-                    )}
-                    {!task.completed && task.dueDate < today
-                      ? "Просрочено · "
-                      : ""}
-                    {dueLabel(task.dueDate)}
-                  </span>
+              <button
+                type="button"
+                aria-label={`${task.completed ? "Вернуть в работу" : childCountByParent.has(task.id) ? "Выполнить с подзадачами" : "Выполнить"}: ${task.title}`}
+                aria-pressed={task.completed}
+                className={`check-box ${task.completed ? "checked" : ""}`}
+                onClick={() => toggleTask(task.id)}
+              >
+                {task.completed && <Check size={14} strokeWidth={3} />}
+              </button>
+              <div className="task-body">
+                <strong className="task-title" title={task.title}>
+                  {task.title}
+                </strong>
+                {task.description && (
+                  <p className="task-description" title={task.description}>
+                    {task.description}
+                  </p>
                 )}
-                {childCountByParent.has(task.id) && (
-                  <span className="subtask-count">
-                    <CheckCheck size={13} />
-                    {childCountByParent.get(task.id)?.done}/
-                    {childCountByParent.get(task.id)?.total} подзадач
+                <div className="task-meta">
+                  <span className={`task-priority ${task.priority}`}>
+                    <PriorityIcon priority={task.priority} size={14} />{" "}
+                    {priorityLabels[task.priority]}
                   </span>
-                )}
+                  {dueDate && (
+                    <span
+                      className={`task-due ${!task.completed && dueDate < today ? "overdue" : !task.completed && dueDate === today ? "today" : ""}`}
+                      title={
+                        !task.dueDate ? "Срок родительской задачи" : undefined
+                      }
+                    >
+                      {!task.completed && dueDate < today ? (
+                        <AlertTriangle size={14} aria-hidden="true" />
+                      ) : !task.completed && dueDate === today ? (
+                        <Flame size={14} aria-hidden="true" />
+                      ) : (
+                        <CalendarDays size={12} aria-hidden="true" />
+                      )}
+                      {!task.completed && dueDate < today
+                        ? "Просрочено · "
+                        : ""}
+                      {dueLabel(dueDate)}
+                    </span>
+                  )}
+                  {childCountByParent.has(task.id) && (
+                    <span className="subtask-count">
+                      <CheckCheck size={13} />
+                      {childCountByParent.get(task.id)?.done}/
+                      {childCountByParent.get(task.id)?.total} подзадач
+                    </span>
+                  )}
+                </div>
               </div>
-            </div>
-            <div className="task-actions">
-              {depth === 0 && (
+              <div className="task-actions">
+                {depth === 0 && (
+                  <button
+                    type="button"
+                    className="row-action add-subtask-action"
+                    aria-label={`Добавить подзадачу: ${task.title}`}
+                    title="Добавить подзадачу"
+                    onClick={() => openNewTask(task.id)}
+                  >
+                    <Plus size={18} />
+                  </button>
+                )}
                 <button
                   type="button"
-                  className="row-action add-subtask-action"
-                  aria-label={`Добавить подзадачу: ${task.title}`}
-                  title="Добавить подзадачу"
-                  onClick={() => openNewTask(task.id)}
+                  className="row-action"
+                  aria-label={`Редактировать: ${task.title}`}
+                  title="Редактировать"
+                  onClick={() => editTask(task)}
                 >
-                  <Plus size={18} />
+                  <Pencil size={17} />
                 </button>
-              )}
-              <button
-                type="button"
-                className="row-action"
-                aria-label={`Редактировать: ${task.title}`}
-                title="Редактировать"
-                onClick={() => editTask(task)}
-              >
-                <Pencil size={17} />
-              </button>
-              <button
-                type="button"
-                className="row-action delete-action"
-                aria-label={`Удалить: ${task.title}`}
-                title="Удалить"
-                onClick={() => removeTask(task)}
-              >
-                <Trash2 size={17} />
-              </button>
+                <button
+                  type="button"
+                  className="row-action delete-action"
+                  aria-label={`Удалить: ${task.title}`}
+                  title="Удалить"
+                  onClick={() => removeTask(task)}
+                >
+                  <Trash2 size={17} />
+                </button>
+              </div>
             </div>
-          </div>
-        ))
+          );
+        })
       ) : (
         <div className="empty-state">
           <div className="empty-icon">

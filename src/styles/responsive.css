@@ -354,6 +354,7 @@
   }
   .quick-add-options .priority-picker {
     flex: 1 1 0;
+    width: auto;
     min-width: 125px;
   }
   .quick-add-options select,

@@ -175,27 +175,44 @@ function App() {
   }, [menuOpen]);
 
   const today = dayOffset(0);
+  // A subtask without its own deadline follows its parent's deadline in dated
+  // views. The stored subtask remains undated and may override it later.
+  const effectiveDueDates = useMemo(() => {
+    const byId = new Map(tasks.map((task) => [task.id, task]));
+    return new Map(
+      tasks.map((task) => [
+        task.id,
+        task.dueDate ??
+          (task.parentId ? byId.get(task.parentId)?.dueDate : null) ??
+          null,
+      ]),
+    );
+  }, [tasks]);
   const tasksByDate = useMemo(() => {
     const result = new Map<string, Task[]>();
     for (const task of tasks) {
+      const dueDate = effectiveDueDates.get(task.id);
       if (
-        !task.dueDate ||
+        !dueDate ||
         (priorityFilter.length > 0 && !priorityFilter.includes(task.priority))
       )
         continue;
-      const onDate = result.get(task.dueDate) ?? [];
+      const onDate = result.get(dueDate) ?? [];
       onDate.push(task);
-      result.set(task.dueDate, onDate);
+      result.set(dueDate, onDate);
     }
     return result;
-  }, [tasks, priorityFilter]);
+  }, [tasks, priorityFilter, effectiveDueDates]);
   const activeCount = tasks.filter((task) => !task.completed).length;
   const doneCount = tasks.length - activeCount;
-  const todayTasks = tasks.filter((task) => task.dueDate === today);
+  const todayTasks = tasks.filter(
+    (task) => effectiveDueDates.get(task.id) === today,
+  );
   const todayDone = todayTasks.filter((task) => task.completed).length;
-  const overdueCount = tasks.filter(
-    (task) => !task.completed && task.dueDate && task.dueDate < today,
-  ).length;
+  const overdueCount = tasks.filter((task) => {
+    const dueDate = effectiveDueDates.get(task.id);
+    return !task.completed && !!dueDate && dueDate < today;
+  }).length;
   const progress = tasks.length
     ? Math.round((doneCount / tasks.length) * 100)
     : 0;
@@ -203,16 +220,17 @@ function App() {
   const workspaceTasks = useMemo(() => {
     const query = search.trim().toLowerCase();
     return tasks.filter((task) => {
-      if (view === "calendar" && task.dueDate !== selectedDate) return false;
-      if (view === "today" && task.dueDate !== today) return false;
+      const dueDate = effectiveDueDates.get(task.id);
+      if (view === "calendar" && dueDate !== selectedDate) return false;
+      if (view === "today" && dueDate !== today) return false;
       if (
         view === "upcoming" &&
-        (task.dueDate === null || task.dueDate <= today || task.completed)
+        (!dueDate || dueDate <= today || task.completed)
       )
         return false;
       if (
         view === "overdue" &&
-        (task.dueDate === null || task.dueDate >= today || task.completed)
+        (!dueDate || dueDate >= today || task.completed)
       )
         return false;
       if (view === "completed" && !task.completed) return false;
@@ -222,7 +240,7 @@ function App() {
       }
       return `${task.title} ${task.description}`.toLowerCase().includes(query);
     });
-  }, [tasks, view, status, selectedDate, search, today]);
+  }, [tasks, view, status, selectedDate, search, today, effectiveDueDates]);
 
   const workspaceTaskIds = useMemo(
     () => new Set(workspaceTasks.map((task) => task.id)),
@@ -619,12 +637,13 @@ function App() {
   const sidebarCounts: Record<View, number> = {
     inbox: tasks.length,
     today: todayTasks.length,
-    upcoming: tasks.filter(
-      (task) => !!task.dueDate && task.dueDate > today && !task.completed,
-    ).length,
+    upcoming: tasks.filter((task) => {
+      const dueDate = effectiveDueDates.get(task.id);
+      return !!dueDate && dueDate > today && !task.completed;
+    }).length,
     overdue: overdueCount,
     completed: doneCount,
-    calendar: tasks.filter((task) => !!task.dueDate).length,
+    calendar: tasks.filter((task) => !!effectiveDueDates.get(task.id)).length,
   };
 
   return (
@@ -823,6 +842,7 @@ function App() {
               remainingRows={remainingRows}
               setVisibleLimit={setVisibleLimit}
               today={today}
+              effectiveDueDates={effectiveDueDates}
               childCountByParent={childCountByParent}
               editTask={editTask}
               toggleTask={toggleTask}

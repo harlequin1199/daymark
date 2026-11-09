@@ -649,7 +649,8 @@
   outline: 2px solid #afa1e7;
 }
 .quick-add-options .priority-picker {
-  flex: 0 1 auto;
+  flex: 0 0 auto;
+  width: 140px;
   min-width: 132px;
 }
 .priority-picker {
@@ -726,9 +727,10 @@
   background: #f5f2ff;
 }
 .editor-modal .priority-picker-list {
-  position: static;
+  top: auto;
+  bottom: calc(100% + 5px);
   width: 100%;
-  margin-top: 5px;
+  margin-top: 0;
   box-shadow: 0 6px 14px #2a214014;
 }
 .quick-add-options select,

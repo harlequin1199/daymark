@@ -484,3 +484,134 @@ test("quick-add priority, sorting and overdue tasks", async ({ page }) => {
     .getByRole("combobox", { name: "Сортировка задач" })
     .selectOption("priority");
 });
+
+test("quick-add priority stays compact at desktop and phone widths", async ({
+  page,
+}) => {
+  for (const width of [1360, 390, 320]) {
+    await page.setViewportSize({ width, height: 760 });
+    await page.goto("/");
+    const form = page.locator(".quick-add");
+    const picker = form.locator(".priority-picker");
+    const formBox = await form.boundingBox();
+    const pickerBox = await picker.boundingBox();
+    expect(formBox).not.toBeNull();
+    expect(pickerBox).not.toBeNull();
+    expect(pickerBox!.width).toBeGreaterThanOrEqual(125);
+    expect(pickerBox!.width).toBeLessThan(formBox!.width * 0.7);
+
+    await picker.getByRole("combobox").click();
+    const menuBox = await picker.getByRole("listbox").boundingBox();
+    expect(menuBox).not.toBeNull();
+    expect(menuBox!.width).toBeLessThan(formBox!.width * 0.7);
+    await picker.getByRole("option", { name: "Высокий" }).click();
+    await expect(picker.getByRole("combobox")).toHaveAttribute(
+      "aria-expanded",
+      "false",
+    );
+  }
+});
+
+test("editor priority menu does not move or resize the dialog", async ({
+  page,
+}) => {
+  for (const { width, height } of [
+    { width: 1360, height: 900 },
+    { width: 390, height: 720 },
+    { width: 320, height: 640 },
+  ]) {
+    await page.setViewportSize({ width, height });
+    await page.goto("/");
+    await page.getByRole("button", { name: "Новая задача" }).click();
+    const dialog = page.getByRole("dialog", { name: "Новая задача" });
+    await dialog.evaluate(async (element) => {
+      await Promise.all(
+        element.getAnimations().map((animation) => animation.finished),
+      );
+    });
+    const picker = dialog.getByRole("combobox", { name: /Приоритет:/ });
+    await picker.scrollIntoViewIfNeeded();
+    const before = await dialog.boundingBox();
+    await picker.click();
+    const menu = dialog.getByRole("listbox", { name: "Приоритет" });
+    await expect(menu).toBeVisible();
+    const after = await dialog.boundingBox();
+    const menuBox = await menu.boundingBox();
+    expect(before).not.toBeNull();
+    expect(after).not.toBeNull();
+    expect(menuBox).not.toBeNull();
+    expect(Math.abs(after!.y - before!.y)).toBeLessThan(2);
+    expect(Math.abs(after!.height - before!.height)).toBeLessThan(2);
+    expect(menuBox!.y).toBeGreaterThanOrEqual(after!.y - 2);
+    expect(menuBox!.y + menuBox!.height).toBeLessThanOrEqual(
+      after!.y + after!.height + 2,
+    );
+    await menu.getByRole("option", { name: "Низкий" }).click();
+    await expect(picker).toHaveAttribute("aria-expanded", "false");
+    await dialog.getByRole("button", { name: "Отмена" }).click();
+  }
+});
+
+test("undated subtasks follow their parent in Today and Calendar", async ({
+  page,
+  isMobile,
+}) => {
+  await page.addInitScript(() => {
+    const date = new Date();
+    const today = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+    window.localStorage.setItem(
+      "daymark:tasks:v1",
+      JSON.stringify([
+        {
+          id: "dated-parent",
+          title: "Родитель на сегодня",
+          description: "",
+          priority: "low",
+          dueDate: today,
+          completed: false,
+          createdAt: 2,
+          parentId: null,
+        },
+        {
+          id: "undated-child",
+          title: "Подзадача без собственного срока",
+          description: "",
+          priority: "medium",
+          dueDate: null,
+          completed: false,
+          createdAt: 1,
+          parentId: "dated-parent",
+        },
+      ]),
+    );
+  });
+  await page.goto("/");
+  if (isMobile)
+    await page.getByRole("button", { name: "Открыть меню" }).click();
+  await page.getByRole("button", { name: /Сегодня 2/ }).click();
+  await expect(
+    page.getByRole("button", {
+      name: "Открыть: Подзадача без собственного срока",
+    }),
+  ).toBeVisible();
+  await expect(page.locator(".subtask-row .task-due.today")).toBeVisible();
+
+  if (isMobile)
+    await page.getByRole("button", { name: "Открыть меню" }).click();
+  await page.getByRole("button", { name: /Обычные задачи 1/ }).click();
+  await expect(
+    page.getByRole("button", {
+      name: "Открыть: Подзадача без собственного срока",
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Открыть: Родитель на сегодня" }),
+  ).toBeVisible();
+
+  if (isMobile)
+    await page.getByRole("button", { name: "Открыть меню" }).click();
+  await page.getByRole("button", { name: /Календарь/ }).click();
+  await expect(
+    page.locator(".calendar-day[aria-pressed='true'] .calendar-day-count"),
+  ).toHaveText("1");
+});
