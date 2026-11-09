@@ -491,6 +491,65 @@ describe("Daymark core workflows", () => {
     ).toBeInTheDocument();
   });
 
+  it("shows undated subtasks in their parent's Today and Calendar views without changing stored deadlines", async () => {
+    const date = new Date();
+    const today = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+    window.localStorage.setItem(
+      "daymark:tasks:v1",
+      JSON.stringify([
+        {
+          id: "today-parent",
+          title: "Родитель на сегодня",
+          description: "",
+          priority: "low",
+          dueDate: today,
+          completed: false,
+          createdAt: 2,
+          parentId: null,
+        },
+        {
+          id: "undated-child",
+          title: "Дочерняя задача без даты",
+          description: "",
+          priority: "medium",
+          dueDate: null,
+          completed: false,
+          createdAt: 1,
+          parentId: "today-parent",
+        },
+      ]),
+    );
+    const user = userEvent.setup();
+    render(<App />);
+    await user.click(screen.getByRole("button", { name: "Сегодня 2" }));
+    expect(
+      screen.getByRole("button", { name: "Открыть: Дочерняя задача без даты" }),
+    ).toBeInTheDocument();
+    expect(
+      document.querySelector(".subtask-row .task-due.today"),
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /Обычные задачи 1/ }));
+    expect(
+      screen.getByRole("button", { name: "Открыть: Дочерняя задача без даты" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Открыть: Родитель на сегодня" }),
+    ).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /Календарь/ }));
+    expect(
+      screen.getByRole("button", { name: "Открыть: Дочерняя задача без даты" }),
+    ).toBeInTheDocument();
+
+    const stored = JSON.parse(
+      window.localStorage.getItem("daymark:tasks:v1") ?? "[]",
+    );
+    expect(
+      stored.find((task: { id: string }) => task.id === "undated-child")
+        ?.dueDate,
+    ).toBeNull();
+  });
+
   it("opens a task from its row and shows a description preview", async () => {
     const user = userEvent.setup();
     render(<App />);
