@@ -1,0 +1,250 @@
+.editor-modal::backdrop,
+.info-modal::backdrop,
+.profile-modal::backdrop {
+  background: #27233394;
+  backdrop-filter: blur(6px);
+}
+.editor-modal,
+.info-modal,
+.profile-modal {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  width: min(100%, 510px);
+  background: #fff;
+  color: #252733;
+  border: 0;
+  border-radius: 19px;
+  box-shadow: 0 20px 70px #221d3340;
+  padding: 29px;
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  animation: dialog-enter 0.22s ease-out both;
+}
+@keyframes dialog-enter {
+  from {
+    opacity: 0;
+    transform: translateY(9px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.editor-parent-hint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #655d75;
+  margin: 8px 0 0;
+  font-size: 12px;
+  max-width: 320px;
+  overflow-wrap: anywhere;
+}
+.modal-top {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+.modal-top h2 {
+  font-family: "Manrope Variable", system-ui, sans-serif;
+  margin: 7px 0 0;
+  font-size: 23px;
+  letter-spacing: -0.8px;
+}
+.icon-button {
+  background: none;
+  border: 0;
+  color: #625c6b;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+}
+.icon-button:hover {
+  background: #f2f0fa;
+}
+.form-label {
+  display: block;
+  color: #625e6f;
+  font-size: 13px;
+  font-weight: 750;
+  margin: 19px 0 8px;
+}
+.form-label span {
+  font-weight: 500;
+  color: #625c6b;
+}
+.form-input {
+  display: block;
+  width: 100%;
+  border: 1px solid #e7e4eb;
+  border-radius: 9px;
+  padding: 12px 13px;
+  font-size: 14px;
+  color: #3b3848;
+  background: #fff;
+  outline: none;
+  min-height: 44px;
+}
+.form-input:focus {
+  border-color: #8875d6;
+  outline: 3px solid #eee9fc;
+}
+.form-input::placeholder {
+  color: #6f6976;
+}
+.description-input {
+  resize: vertical;
+  min-height: 85px;
+}
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+.modal-actions {
+  margin-top: 30px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.secondary-button {
+  border: 1px solid #eae7ed;
+  background: #fff;
+  color: #787480;
+  border-radius: 9px;
+  padding: 12px 17px;
+  font-size: 13px;
+  font-weight: 700;
+}
+.info-modal {
+  max-width: 420px;
+  padding: 35px;
+}
+.profile-modal {
+  max-width: 460px;
+}
+.profile-explanation {
+  color: #615d6b;
+  line-height: 1.7;
+  font-size: 13px;
+  margin: 0;
+}
+.profile-switcher {
+  display: grid;
+  gap: 7px;
+  margin: 18px 0 22px;
+  max-height: 244px;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+.profile-choice,
+.profile-create-button {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  min-height: 49px;
+  gap: 11px;
+  border: 1px solid #eae7f0;
+  border-radius: 10px;
+  padding: 8px 11px;
+  background: #fff;
+  text-align: left;
+  color: #4a4657;
+  font-weight: 700;
+  font-size: 13px;
+}
+.profile-choice:hover,
+.profile-create-button:hover {
+  border-color: #bcaee6;
+  background: #f9f7ff;
+}
+.profile-choice.selected {
+  border-color: #ac9ae3;
+  background: #f3efff;
+  color: #5b46a5;
+}
+.profile-choice-avatar {
+  display: grid;
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border-radius: 8px;
+  background: #e8e2fb;
+  color: #715dc2;
+}
+.profile-choice-name {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.profile-choice small {
+  color: #777183;
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 600;
+}
+.profile-create-button {
+  justify-content: center;
+  color: #6251a4;
+  border-style: dashed;
+}
+.profile-local-note {
+  margin: 14px 0 0;
+  color: #827d89;
+  font-size: 11px;
+  line-height: 1.5;
+}
+.info-close {
+  position: absolute;
+  right: 18px;
+  top: 18px;
+}
+.info-brand {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  background: #e9e4ff;
+  color: #7766d0;
+  border-radius: 16px;
+  margin-bottom: 23px;
+}
+.info-modal h2 {
+  font:
+    800 26px/1.35 "Manrope Variable",
+    sans-serif;
+  letter-spacing: -1px;
+  margin: 0 0 14px;
+}
+.info-modal p {
+  font-size: 14px;
+  color: #625c6b;
+  line-height: 1.8;
+  margin: 0;
+}
+.info-tip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: #5c4a9b;
+  background: #f4f1ff;
+  padding: 13px;
+  border-radius: 9px;
+  margin: 23px 0;
+}
+.info-button {
+  width: 100%;
+}
+.mobile-menu,
+.sidebar-close,
+.mobile-backdrop {
+  display: none;
+}

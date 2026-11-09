@@ -1,0 +1,406 @@
+@media (max-width: 1220px) {
+  .sidebar {
+    flex-basis: 237px;
+    width: 237px;
+  }
+  .content-wrap {
+    padding-left: 38px;
+    padding-right: 38px;
+  }
+  .topbar {
+    padding-left: 38px;
+    padding-right: 38px;
+  }
+  .focus-card {
+    padding: 27px;
+  }
+  .progress-ring {
+    width: 118px;
+    height: 118px;
+    flex-basis: 118px;
+    padding: 11px;
+    margin-right: 0;
+  }
+  .progress-inner strong {
+    font-size: 24px;
+  }
+  .today-card {
+    padding: 23px;
+  }
+  .hero-grid {
+    gap: 15px;
+  }
+}
+@media (max-width: 1000px) {
+  .task-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .toolbar-right {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .toolbar-right .search-field {
+    flex: 1;
+    max-width: none;
+  }
+  .sidebar {
+    flex-basis: 220px;
+    width: 220px;
+  }
+  .content-wrap {
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+  .topbar {
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+  .hero-grid {
+    grid-template-columns: 1fr;
+  }
+  .focus-card {
+    min-height: 180px;
+  }
+  .today-card {
+    min-height: 165px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+  .today-card-heading {
+    grid-column: 1/-1;
+  }
+  .today-metric {
+    margin-top: 14px;
+  }
+  .today-bottom {
+    border-top: 0;
+    padding-top: 0;
+    align-self: end;
+    margin-bottom: 4px;
+  }
+  .today-metric strong {
+    font-size: 37px;
+  }
+  .hero-grid {
+    margin-bottom: 28px;
+  }
+}
+@media (max-width: 730px) {
+  .calendar-panel {
+    padding: 16px;
+  }
+  .calendar-day {
+    min-height: 70px;
+    padding: 6px 4px;
+  }
+  .calendar-grid,
+  .calendar-weekdays {
+    gap: 3px;
+  }
+  .calendar-events {
+    display: none;
+  }
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    transform: translateX(-103%);
+    transition: transform 0.25s;
+    visibility: hidden;
+    box-shadow: 8px 0 40px #26203a20;
+    width: 270px;
+    height: 100dvh;
+    z-index: 40;
+  }
+  .sidebar.sidebar-open {
+    transform: translateX(0);
+    visibility: visible;
+  }
+  .mobile-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: #1d173b64;
+    z-index: 35;
+    border: 0;
+    width: 100%;
+  }
+  .sidebar-close {
+    display: grid;
+    margin-left: auto;
+  }
+  .mobile-menu {
+    display: grid;
+    margin-right: 13px;
+  }
+  .topbar {
+    height: 68px;
+    justify-content: flex-start;
+    background: #fff;
+  }
+  .topbar-actions {
+    margin-left: auto;
+  }
+  .content-wrap {
+    padding: 26px 21px 15px;
+  }
+  .page-heading {
+    margin-bottom: 21px;
+  }
+  .page-heading h1 {
+    font-size: 26px;
+    letter-spacing: -1px;
+  }
+  .page-heading p {
+    max-width: 275px;
+  }
+  .date-pill {
+    display: none;
+  }
+  .hero-grid {
+    margin-bottom: 25px;
+  }
+  .toolbar-right {
+    width: 100%;
+    flex: 1 1 100%;
+    justify-content: stretch;
+  }
+  .toolbar-right .search-field {
+    flex: 1;
+    max-width: none;
+  }
+}
+@media (max-width: 480px) {
+  .calendar-panel {
+    padding: 12px;
+    margin-bottom: 24px;
+  }
+  .calendar-heading {
+    margin-bottom: 16px;
+  }
+  .calendar-heading h2 {
+    font-size: 18px;
+  }
+  .calendar-day {
+    min-height: 54px;
+    padding: 5px 2px;
+  }
+  .calendar-day-number {
+    width: 21px;
+    height: 21px;
+    font-size: 11px;
+  }
+  .calendar-day-count {
+    height: 17px;
+    min-width: 16px;
+    padding: 0 2px;
+    font-size: 9px;
+  }
+  .calendar-grid,
+  .calendar-weekdays {
+    gap: 2px;
+  }
+  .calendar-weekdays span {
+    font-size: 10px;
+  }
+  .calendar-hint {
+    font-size: 11px;
+  }
+  .topbar {
+    padding: 0 17px;
+  }
+  .breadcrumb {
+    gap: 7px;
+    font-size: 11px;
+  }
+  .content-wrap {
+    padding: 25px 16px 15px;
+  }
+  .page-heading {
+    align-items: start;
+    flex-direction: column;
+    gap: 17px;
+  }
+  .section-add {
+    width: 100%;
+  }
+  .page-heading h1 {
+    font-size: 27px;
+  }
+  .hero-grid {
+    gap: 12px;
+  }
+  .focus-card {
+    min-height: 190px;
+    padding: 20px;
+  }
+  .focus-card h2 {
+    font-size: 22px;
+  }
+  .focus-card-content {
+    max-width: 230px;
+  }
+  .focus-card p {
+    max-width: 190px;
+  }
+  .focus-bottom {
+    max-width: 195px;
+  }
+  .progress-ring {
+    display: none;
+  }
+  .focus-percent-mobile {
+    display: inline;
+    color: #ebdffe;
+    font-weight: 750;
+    font-size: 16px;
+  }
+  .progress-inner strong {
+    font-size: 19px;
+  }
+  .progress-inner small {
+    font-size: 10px;
+  }
+  .today-card {
+    padding: 21px;
+    grid-template-columns: 1fr 1fr;
+    min-height: 165px;
+  }
+  .today-bottom {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 5px;
+  }
+  .today-bottom p {
+    text-align: right;
+  }
+  .task-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .toolbar-right {
+    gap: 8px;
+  }
+  .sort-control {
+    min-width: 0;
+    flex: 0 1 45%;
+  }
+  .sort-control select {
+    min-width: 0;
+    max-width: 100%;
+  }
+  .toolbar-right .search-field {
+    min-width: 0;
+  }
+  .filter-switch {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .filter-switch button {
+    padding: 9px 7px;
+  }
+  .search-field {
+    max-width: none;
+  }
+  .section-top h2 {
+    font-size: 21px;
+  }
+  .task-row {
+    padding: 14px 13px;
+    gap: 8px;
+  }
+  .task-row.subtask-row {
+    padding-left: 18px;
+  }
+  .subtask-indent {
+    width: 15px;
+  }
+  .task-actions {
+    gap: 0;
+  }
+  .row-action {
+    width: 35px;
+    height: 40px;
+  }
+  .row-action:not(.delete-action):not(.add-subtask-action) {
+    display: none;
+  }
+  .task-title {
+    font-size: 14px;
+  }
+  .task-meta {
+    gap: 8px;
+  }
+  .quick-add {
+    padding: 11px 12px;
+    gap: 9px;
+  }
+  .quick-add-main {
+    gap: 8px;
+  }
+  .quick-add-options {
+    gap: 6px;
+  }
+  .quick-add-options label {
+    flex: 1 1 0;
+    padding: 0 6px;
+    min-width: 125px;
+  }
+  .quick-add-options .priority-picker {
+    flex: 1 1 0;
+    min-width: 125px;
+  }
+  .quick-add-options select,
+  .quick-add-options input[type="date"] {
+    max-width: 100%;
+  }
+  .quick-submit {
+    font-size: 0;
+    gap: 0;
+    padding: 9px;
+  }
+  .quick-submit svg {
+    width: 17px;
+  }
+  .list-footer {
+    font-size: 11px;
+    flex-wrap: wrap;
+  }
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .editor-modal {
+    padding: 21px;
+  }
+  .info-modal,
+  .profile-modal {
+    padding: 22px;
+  }
+  .modal-actions .primary-button {
+    padding: 12px;
+  }
+  .undo-toast {
+    width: calc(100% - 35px);
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .app-footer {
+    padding-top: 35px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
