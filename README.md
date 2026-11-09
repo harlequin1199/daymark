@@ -2,6 +2,8 @@
 
 A calm, responsive personal to-do app concept built with React, TypeScript, Vite, and Lucide.
 
+[Open Daymark on GitHub Pages](https://harlequin1199.github.io/daymark/)
+
 ## Features
 
 - Create, edit, complete, and delete tasks, with undo for deletion.
