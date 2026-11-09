@@ -47,10 +47,10 @@ Tags: `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`.
 
 ## Test results
 
-- Vitest / React Testing Library: **17/17 passing on 9 November 2026** (core workflows, local-profile persistence, legacy migrations, multi-priority filters across workspaces, contextual quick-add, 5,000-task paging, undo, dialog focus, subtask actions, sorting, urgency, description previews).
+- Vitest / React Testing Library: **18/18 passing on 9 November 2026** (core workflows, local-profile persistence, legacy migrations, multi-priority filters across workspaces, contextual quick-add, inherited subtask deadlines, 5,000-task paging, undo, dialog focus, subtask actions, sorting, urgency, description previews).
 - TypeScript / Vite production build: **passing**.
 - Manual browser checks: dialog opening, Escape, focus restoration, create, edit, search, filtering, and local storage persistence.
-- Playwright E2E: **13 passed, 1 intentionally skipped in the 6 November run** across desktop and mobile Chromium. The skipped test was mobile-nav-only in the desktop project. The current source includes new E2E coverage but was **not rerun locally on 9 November** because Chromium is unavailable in the current execution environment; CI installs Chromium before running it.
+- Playwright E2E: **13 passed, 1 intentionally skipped in the 6 November run** across desktop and mobile Chromium. The skipped test was mobile-nav-only in the desktop project. The expanded suite was **not rerun locally on 9 November** because Chromium is unavailable in the current execution environment; GitHub Actions successfully ran the expanded browser tests on the pull request and again on the merged `main` commit.
 - Screenshots inspected at **320, 390, 768 and 1440 CSS pixels**, with no horizontal overflow. A squeezed search field at tablet width was corrected during review.
 
 ## Lighthouse lab audit (6 November revision)
@@ -83,8 +83,8 @@ Run on a locally served production build with Chromium 153 and Lighthouse 13.6.0
 - Split the 1,821-line `App.tsx` into domain utilities, data loading and focused UI components; the remaining app module manages shared state and orchestration.
 - Split the 2,203-line stylesheet into base, layout, tasks, dialogs and responsive sections while preserving cascade order. Vite still emits one optimized CSS asset.
 - Fixed quick-add context: Today and Upcoming preselect matching due dates and keep users in their current view when the new task belongs to it; task editor uses the same defaults.
-- Raised the Vitest per-test timeout from the jsdom default 5 seconds to 20 seconds for slower shared runners. The 9 November `npm test` run passed all 17 tests; repeat CI runs remain an important handoff check.
+- Raised the Vitest per-test timeout from the jsdom default 5 seconds to 20 seconds for slower shared runners. The 9 November `npm test` run passed all 18 tests; GitHub Actions verified the same suite after the merge.
 - Browser checks after refactoring confirmed multiple priority filters, new-task creation in Today, visual layout and centered About dialog after scrolling.
-- The current Site is owner-private. Public visibility and the external GitHub repository are intentionally left for the owner to configure before submission.
+- The production site is public at https://harlequin1199.github.io/daymark/ and its source is available at https://github.com/harlequin1199/daymark. GitHub Pages automatically deploys successful builds from `main`.
 
 These items are verification limits, not claims of passed tests. No real-user Web Vitals measurement has been fabricated.
